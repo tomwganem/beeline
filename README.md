@@ -4,21 +4,20 @@ This image contains beeline that can be used to test remote connection to Hive  
 
 ## Download certificate
 
-You can download 
+You can download the certificate with the follwoing commands:
 ```
-export GATEWAY_ADDRESS=34.249.149.39
 openssl s_client -connect ${GATEWAY_ADDRESS}:8443 -showcerts </dev/null | openssl x509 -outform PEM > gateway.pem
-keytool -import -alias gateway-identity -file gateway.pem -keystore gateway.jks -storepass admin123
 
+#Import it to gateway.jks file
+keytool -import -alias gateway-identity -file gateway.pem -keystore gateway.jks -storepass ${GATEWAY_JKS_PASSWORD}
 ```
 
 ## Examples
-
 ```
-openssl s_client -connect 34.249.149.39:8443 -showcerts </dev/null | openssl x509 -outform PEM > gateway.pem
-
-#Import it to gateway.jks file with admin123 password
-keytool -import -alias gateway-identity -file gateway.pem -keystore gateway.jks -storepass admin123
+export GATEWAY_ADDRESS=34.249.149.39
+export GATEWAY_JKS_PASSWORD=admin123
+openssl s_client -connect  ${GATEWAY_ADDRESS}:8443 -showcerts </dev/null | openssl x509 -outform PEM > gateway.pem
+keytool -import -alias gateway-identity -file gateway.pem -keystore gateway.jks -storepass ${GATEWAY_JKS_PASSWORD}
 
 Owner: CN=34.249.149.39, OU=Test, O=Hadoop, L=Test, ST=Test, C=US
 Issuer: CN=34.249.149.39, OU=Test, O=Hadoop, L=Test, ST=Test, C=US
@@ -36,18 +35,19 @@ Certificate was added to keystore
 ```
 
 ## Usage
-Make sure that the trust store (gateway.jks) is copied into that directory from where you are starting the container:
+Make sure that the trust store (gateway.jks) genetared with the above keytool command is located in the directory from where you are starting the container:
 
 ```
-docker run -ti -v $(pwd):/cert akanto/beeline -u "jdbc:hive2://<ip address>:8443/;ssl=true;sslTrustStore=/cert/gateway.jks;trustStorePassword=<password of trust store>;transportMode=http;httpPath=gateway/hdc/hive" -d org.apache.hive.jdbc.HiveDriver -n <LDAP user> -p <LDAP Password>
+docker run -ti -v $(pwd):/cert akanto/beeline -u "jdbc:hive2://${GATEWAY_ADDRESS}:8443/;ssl=true;sslTrustStore=/cert/gateway.jks;trustStorePassword=${GATEWAY_JKS_PASSWORD};transportMode=http;httpPath=gateway/hdc/hive" -d org.apache.hive.jdbc.HiveDriver -n <LDAP user> -p <LDAP Password>
 ```
 
 ## Examples
 ```
 export GATEWAY_ADDRESS=34.249.149.39
+export GATEWAY_JKS_PASSWORD=admin123
 # Execute the show databases SQL
-docker run -ti -v $(pwd):/cert akanto/beeline -u "jdbc:hive2:/${GATEWAY_ADDRESS}:8443/;ssl=true;sslTrustStore=/cert/gateway.jks;trustStorePassword=admin123;transportMode=http;httpPath=gateway/hdc/hive" -d org.apache.hive.jdbc.HiveDriver -n admin -p admin -e "show databases;"
+docker run -ti -v $(pwd):/cert akanto/beeline -u "jdbc:hive2://${GATEWAY_ADDRESS}:8443/;ssl=true;sslTrustStore=/cert/gateway.jks;trustStorePassword=${GATEWAY_JKS_PASSWORD};transportMode=http;httpPath=gateway/hdc/hive" -d org.apache.hive.jdbc.HiveDriver -n admin -p admin -e "show databases;"
 
 # Open an interactive beeline to execute multiple SQL commands
-docker run -ti -v $(pwd):/cert akanto/beeline -u "jdbc:hive2://${GATEWAY_ADDRESS}:8443/;ssl=true;sslTrustStore=/cert/gateway.jks;trustStorePassword=admin123;transportMode=http;httpPath=gateway/hdc/hive" -d org.apache.hive.jdbc.HiveDriver -n admin -p admin
+docker run -ti -v $(pwd):/cert akanto/beeline -u "jdbc:hive2://${GATEWAY_ADDRESS}:8443/;ssl=true;sslTrustStore=/cert/gateway.jks;trustStorePassword=${GATEWAY_JKS_PASSWORD};transportMode=http;httpPath=gateway/hdc/hive" -d org.apache.hive.jdbc.HiveDriver -n admin -p admin
 ```
