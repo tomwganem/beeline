@@ -1,6 +1,6 @@
 [HDP-UTILS-1.1.0.21]
 name=HDP-UTILS-1.1.0.21
-baseurl=http://s3.amazonaws.com/dev.hortonworks.com/HDP-UTILS-1.1.0.21/repos/centos6
+baseurl=http://s3.amazonaws.com/dev.hortonworks.com/HDP-UTILS-1.1.0.21/repos/centos7
 
 path=/
 enabled=1
