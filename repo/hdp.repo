@@ -1,6 +1,6 @@
 [HDP-2.6]
 name=HDP-2.6
-baseurl=http://s3.amazonaws.com/dev.hortonworks.com/HDP/centos7/2.x/BUILDS/2.6.1.0-14
+baseurl=http://s3.amazonaws.com/dev.hortonworks.com/HDP/centos7/2.x/BUILDS/2.6.1.0-55
 
 path=/
 enabled=1

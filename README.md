@@ -15,8 +15,9 @@ keytool -import -alias gateway-identity -file gateway.pem -keystore gateway.jks 
 ## Examples
 ```
 export GATEWAY_ADDRESS=34.249.149.39
+export GATEWAY_PORT=8443
 export GATEWAY_JKS_PASSWORD=admin123
-openssl s_client -connect  ${GATEWAY_ADDRESS}:8443 -showcerts </dev/null | openssl x509 -outform PEM > gateway.pem
+openssl s_client -servername ${GATEWAY_ADDRESS} -connect  ${GATEWAY_ADDRESS}:${GATEWAY_PORT} -showcerts </dev/null | openssl x509 -outform PEM > gateway.pem
 keytool -import -alias gateway-identity -file gateway.pem -keystore gateway.jks -storepass ${GATEWAY_JKS_PASSWORD}
 
 Owner: CN=34.249.149.39, OU=Test, O=Hadoop, L=Test, ST=Test, C=US
@@ -38,7 +39,7 @@ Certificate was added to keystore
 Make sure that the trust store (gateway.jks) genetared with the above keytool command is located in the directory from where you are starting the container:
 
 ```
-docker run -ti -v $(pwd):/cert akanto/beeline -u "jdbc:hive2://${GATEWAY_ADDRESS}:8443/;ssl=true;sslTrustStore=/cert/gateway.jks;trustStorePassword=${GATEWAY_JKS_PASSWORD};transportMode=http;httpPath=gateway/hdc/hive" -d org.apache.hive.jdbc.HiveDriver -n <LDAP user> -p <LDAP Password>
+docker run -ti -v $(pwd):/cert akanto/beeline -u "jdbc:hive2://${GATEWAY_ADDRESS}:${GATEWAY_PORT}/;ssl=true;sslTrustStore=/cert/gateway.jks;trustStorePassword=${GATEWAY_JKS_PASSWORD};transportMode=http;httpPath=gateway/hdc/hive" -d org.apache.hive.jdbc.HiveDriver -n <LDAP user> -p <LDAP Password>
 ```
 
 ## Examples
@@ -50,4 +51,7 @@ docker run -ti -v $(pwd):/cert akanto/beeline -u "jdbc:hive2://${GATEWAY_ADDRESS
 
 # Open an interactive beeline to execute multiple SQL commands
 docker run -ti -v $(pwd):/cert akanto/beeline -u "jdbc:hive2://${GATEWAY_ADDRESS}:8443/;ssl=true;sslTrustStore=/cert/gateway.jks;trustStorePassword=${GATEWAY_JKS_PASSWORD};transportMode=http;httpPath=gateway/hdc/hive" -d org.apache.hive.jdbc.HiveDriver -n admin -p admin
+
+#create table hello(name string);
+#insert into table hello values('hdcloud');
 ```
