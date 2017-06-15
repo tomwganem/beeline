@@ -45,9 +45,10 @@ docker run -ti -v $(pwd):/cert akanto/beeline -u "jdbc:hive2://${GATEWAY_ADDRESS
 ## Examples
 ```
 export GATEWAY_ADDRESS=34.249.149.39
+export GATEWAY_PORT=8443
 export GATEWAY_JKS_PASSWORD=admin123
 # Execute the show databases SQL
-docker run -ti -v $(pwd):/cert akanto/beeline -u "jdbc:hive2://${GATEWAY_ADDRESS}:8443/;ssl=true;sslTrustStore=/cert/gateway.jks;trustStorePassword=${GATEWAY_JKS_PASSWORD};transportMode=http;httpPath=gateway/hdc/hive" -d org.apache.hive.jdbc.HiveDriver -n admin -p admin -e "show databases;"
+docker run -ti -v $(pwd):/cert akanto/beeline -u "jdbc:hive2://${GATEWAY_ADDRESS}:${GATEWAY_PORT}/;ssl=true;sslTrustStore=/cert/gateway.jks;trustStorePassword=${GATEWAY_JKS_PASSWORD};transportMode=http;httpPath=gateway/hdc/hive" -d org.apache.hive.jdbc.HiveDriver -n admin -p admin -e "show databases;"
 
 # Open an interactive beeline to execute multiple SQL commands
 docker run -ti -v $(pwd):/cert akanto/beeline -u "jdbc:hive2://${GATEWAY_ADDRESS}:8443/;ssl=true;sslTrustStore=/cert/gateway.jks;trustStorePassword=${GATEWAY_JKS_PASSWORD};transportMode=http;httpPath=gateway/hdc/hive" -d org.apache.hive.jdbc.HiveDriver -n admin -p admin
