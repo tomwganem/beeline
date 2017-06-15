@@ -6,7 +6,7 @@ This image contains beeline that can be used to test remote connection to Hive  
 
 You can download the certificate with the follwoing commands:
 ```
-openssl s_client -connect ${GATEWAY_ADDRESS}:8443 -showcerts </dev/null | openssl x509 -outform PEM > gateway.pem
+openssl s_client -servername ${GATEWAY_ADDRESS} -connect  ${GATEWAY_ADDRESS}:${GATEWAY_PORT} -showcerts </dev/null | openssl x509 -outform PEM > gateway.pem
 
 #Import it to gateway.jks file
 keytool -import -alias gateway-identity -file gateway.pem -keystore gateway.jks -storepass ${GATEWAY_JKS_PASSWORD}
